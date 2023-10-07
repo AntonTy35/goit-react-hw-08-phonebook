@@ -5,7 +5,3 @@ export const WrapperStyled = styled.div`
   align-items: center;
   gap: 12px;
 `;
-
-export const UserNameStyled = styled.p`
-  font-weight: 700;
-`;

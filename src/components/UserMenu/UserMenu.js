@@ -1,7 +1,8 @@
 import { useDispatch } from 'react-redux';
 import { logOut } from 'redux/auth/operations';
 import { useAuth } from 'hooks';
-import { WrapperStyled, UserNameStyled } from './UserMenu.styled';
+import { WrapperStyled } from './UserMenu.styled';
+import { Button } from '@chakra-ui/react';
 
 export const UserMenu = () => {
   const dispatch = useDispatch();
@@ -9,10 +10,22 @@ export const UserMenu = () => {
 
   return (
     <WrapperStyled>
-      <UserNameStyled>Welcome, {user.name}</UserNameStyled>
-      <button type="button" onClick={() => dispatch(logOut())}>
+      <p>
+        <b>Welcome</b>,
+      </p>
+      <div>
+        <p>{user.name}</p>
+        <p>{user.email}</p>
+      </div>
+
+      <Button
+        colorScheme="teal"
+        variant="outline"
+        type="button"
+        onClick={() => dispatch(logOut())}
+      >
         Logout
-      </button>
+      </Button>
     </WrapperStyled>
   );
 };

@@ -11,3 +11,7 @@ export const FilterStyled = styled.div`
 export const FilterTitle = styled.h3`
   margin: 0;
 `;
+export const LabelStyled = styled.label`
+  font-size: 24px;
+  text-align: center;
+`;

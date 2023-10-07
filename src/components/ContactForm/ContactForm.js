@@ -7,22 +7,20 @@ import { addContact } from 'redux/contacts/operations';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectContacts } from 'redux/contacts/selectors';
 
-import { Formik, Field } from 'formik';
+import { useFormik } from 'formik';
 import {
   Box,
   Button,
-  Flex,
   FormControl,
   FormLabel,
-  FormErrorMessage,
   Input,
   VStack,
 } from '@chakra-ui/react';
 
-const schema = Yup.object().shape({
+const validationSchema = Yup.object().shape({
   name: Yup.string()
     .matches(
-      /^[a-zA-Za-яА-Я]+(([' -][a-zA-Za-яА-Я ])?[a-zA-Za-яА-Я]*)*$/,
+      /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/,
       'Invalid name format'
     )
     .required('Required!')
@@ -30,11 +28,11 @@ const schema = Yup.object().shape({
     .max(20, 'Too Long!'),
   number: Yup.string()
     .matches(
-      /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/,
+      /\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}/,
       'Invalid phone number format'
     )
     .required('Required!')
-    .min(2, 'Too Short!')
+    .min(7, 'Too Short!')
     .max(20, 'Too Long!'),
 });
 
@@ -52,52 +50,64 @@ export const ContactForm = () => {
       : dispatch(addContact({ id: nanoid(), ...value }));
   };
 
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      number: '',
+    },
+    validationSchema,
+    onSubmit: (values, actions) => {
+      handleAddContact(values);
+      actions.resetForm();
+    },
+  });
   return (
-    <Flex bg="gray.100" align="center" justify="center" h="100vh">
-      <Box bg="white" p={6} rounded="md" w={64}>
-        <Formik
-          initialValues={{
-            name: '',
-            number: '',
-          }}
-          validationSchema={schema}
-          onSubmit={(values, actions) => {
-            handleAddContact(values);
-            actions.resetForm();
-          }}
-        >
-          {({ handleSubmit, errors, touched }) => (
-            <form onSubmit={handleSubmit}>
-              <VStack spacing={4} align="flex-start">
-                <FormControl>
-                  <FormLabel htmlFor="name">Fullname</FormLabel>
-                  <Field as={Input} name="name" type="name" />
-                </FormControl>
-                <FormControl isInvalid={!!errors.password && touched.password}>
-                  <FormLabel htmlFor="number">Phone number</FormLabel>
-                  <Field
-                    as={Input}
-                    name="number"
-                    type="number"
-                    validate={value => {
-                      let error;
+    <Box bg="white" p={6} rounded="md">
+      <form onSubmit={formik.handleSubmit}>
+        <VStack spacing={4} align="flex-start">
+          <FormControl
+            isInvalid={formik.errors.name && formik.touched.name}
+            isRequired
+          >
+            <FormLabel htmlFor="name">Enter new contact name</FormLabel>
+            <Input
+              id="name"
+              name="name"
+              type="name"
+              variant="filled"
+              onChange={formik.handleChange}
+              value={formik.values.name}
+              focusBorderColor="blue.200"
+              color="teal"
+              placeholder="only letters"
+            />
+          </FormControl>
 
-                      if (value.length < 6) {
-                        error = 'Password must contain at least 6 characters';
-                      }
-                      return error;
-                    }}
-                  />
-                  <FormErrorMessage>{errors.password}</FormErrorMessage>
-                </FormControl>
-                <Button type="submit" colorScheme="purple" width="full">
-                  Add contact
-                </Button>
-              </VStack>
-            </form>
-          )}
-        </Formik>
-      </Box>
-    </Flex>
+          <FormControl
+            isInvalid={formik.errors.number && formik.touched.number}
+            isRequired
+          >
+            <FormLabel htmlFor="number">
+              Enter new contact phone number
+            </FormLabel>
+            <Input
+              id="number"
+              name="number"
+              type="number"
+              variant="filled"
+              onChange={formik.handleChange}
+              value={formik.values.number}
+              focusBorderColor="blue.200"
+              color="teal"
+              placeholder="minimum 7 characters..."
+            />
+          </FormControl>
+
+          <Button type="submit" colorScheme="teal" width="full">
+            Add contact
+          </Button>
+        </VStack>
+      </form>
+    </Box>
   );
 };

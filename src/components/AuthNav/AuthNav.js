@@ -1,10 +1,19 @@
-import { NavLinkStyled } from './AuthNav.styled';
+import { Button } from '@chakra-ui/react';
+import { NavLinkStyled, DivStyled } from './AuthNav.styled';
 
 export const AuthNav = () => {
   return (
-    <div>
-      <NavLinkStyled to="/register">Register</NavLinkStyled>
-      <NavLinkStyled to="/login">Log In</NavLinkStyled>
-    </div>
+    <DivStyled>
+      <NavLinkStyled to="/register">
+        <Button colorScheme="teal" variant="outline" type="button">
+          Register
+        </Button>
+      </NavLinkStyled>
+      <NavLinkStyled to="/login">
+        <Button colorScheme="teal" variant="outline" type="button">
+          Log In
+        </Button>
+      </NavLinkStyled>
+    </DivStyled>
   );
 };
